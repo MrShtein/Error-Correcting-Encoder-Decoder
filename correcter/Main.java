@@ -7,9 +7,14 @@ public class Main {
 
         Scanner scan = new Scanner(System.in);
         String phraseToMix = scan.nextLine();
-        SymbolsMixer symbolsMixer = new SymbolsMixer(phraseToMix, ' ', '~');
+        System.out.println(phraseToMix);
+
+        SymbolsTriple symbolsTriple = new SymbolsTriple(phraseToMix);
+        SymbolsMixer symbolsMixer = new SymbolsMixer(symbolsTriple.tripleLetters(), ' ', '~');
         String mixedPhrase = symbolsMixer.mixedPhrase();
-        System.out.println(mixedPhrase);
+        SymbolsUnmixer symbolsUnmixer = new SymbolsUnmixer(mixedPhrase);
+        String unmixedPhrase = symbolsUnmixer.unmixString();
+        System.out.println(unmixedPhrase);
 
 
     }

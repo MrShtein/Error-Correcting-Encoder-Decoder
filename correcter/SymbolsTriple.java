@@ -17,7 +17,7 @@ public class SymbolsTriple {
                 sb.append(symbol);
             }
         }
-
+        System.out.println(sb.toString());
         return sb.toString();
     }
 

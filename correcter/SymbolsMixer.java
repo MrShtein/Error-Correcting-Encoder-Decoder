@@ -38,11 +38,12 @@ public class SymbolsMixer {
                 sb.append(itemToArr);
                 return sb.toString();
             }
-            int randomDigitForMix =  (int) (Math.random() * 3);
+            int randomDigitForMix = (int) (Math.random() * 3);
             int randomDigitForChooseSymbol = (int) (Math.random() * 95);
             itemToArr[randomDigitForMix] = symbols[randomDigitForChooseSymbol];
             sb.append(itemToArr);
         }
-    return sb.toString();
+        System.out.println(sb.toString());
+        return sb.toString();
     }
 }
