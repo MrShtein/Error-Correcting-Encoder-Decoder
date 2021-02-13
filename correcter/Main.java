@@ -1,20 +1,16 @@
 package correcter;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        Scanner scan = new Scanner(System.in);
-        String phraseToMix = scan.nextLine();
-        System.out.println(phraseToMix);
+        FileReader fileReader = new FileReader("send.txt");
 
-        SymbolsTriple symbolsTriple = new SymbolsTriple(phraseToMix);
-        SymbolsMixer symbolsMixer = new SymbolsMixer(symbolsTriple.tripleLetters(), ' ', '~');
-        String mixedPhrase = symbolsMixer.mixedPhrase();
-        SymbolsUnmixer symbolsUnmixer = new SymbolsUnmixer(mixedPhrase);
-        String unmixedPhrase = symbolsUnmixer.unmixString();
-        System.out.println(unmixedPhrase);
+        ByteMixer byteMixer = new ByteMixer(fileReader.readData(), 2, 5);
+        FileWriter fileWriter = new FileWriter("received.txt", byteMixer.mixBitInByteArray());
+        fileWriter.writeData();
 
 
     }
