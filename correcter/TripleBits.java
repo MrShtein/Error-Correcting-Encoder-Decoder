@@ -29,7 +29,6 @@ public class TripleBits {
 
     private byte[] makeMainPartOfByte(byte[] bytes, int tripledDataLength) throws Exception {
         result = new byte[tripledDataLength];
-
         for (int b = 0; b < dataToTriple.length; b++) {
             for (int i = 7; i >= 0; i--) {
                 int mask = 1 << i;
@@ -42,27 +41,24 @@ public class TripleBits {
                         if (numOfBit < 0) setBitToZero();
                     }
                     sumOfThreeBits = 0;
-
-                    int value = (mask & bytes[b]) >> i;
-                    sumOfThreeBits += value;
-                    for (int j = 0; j < 2; j++) {
-                        tempByte ^= (value << numOfBit);
-                        numOfBit--;
-                        if (numOfBit < 0) setBitToZero();
-                    }
+                    setTwoBitsWithoutSum(mask, bytes, b, i);
                 } else {
-                    int value = (mask & bytes[b]) >> i;
-                    sumOfThreeBits += value;
-                    for (int j = 0; j < 2; j++) {
-                        tempByte ^= (value << numOfBit);
-                        numOfBit--;
-                        if (numOfBit < 0) setBitToZero();
-                    }
+                    setTwoBitsWithoutSum(mask, bytes, b, i);
                 }
                 countOfBitMaxThree++;
             }
         }
         return result;
+    }
+
+    private void setTwoBitsWithoutSum(int mask, byte[] bytes, int b, int i) {
+        int value = (mask & bytes[b]) >> i;
+        sumOfThreeBits += value;
+        for (int j = 0; j < 2; j++) {
+            tempByte ^= (value << numOfBit);
+            numOfBit--;
+            if (numOfBit < 0) setBitToZero();
+        }
     }
 
     private void setBitToZero() {
