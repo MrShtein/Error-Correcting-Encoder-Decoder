@@ -6,6 +6,12 @@ import java.util.BitSet;
 public class TripleBits {
 
     private byte[] dataToTriple;
+    byte tempByte = 0;
+    int numOfBit = 7;
+    int numOfResultByte = 0;
+    int sumOfThreeBits = 0;
+    byte[] result;
+    int countOfBitMaxThree = 0;
 
 
     public TripleBits(byte[] dataToTriple) {
@@ -14,46 +20,56 @@ public class TripleBits {
 
     public void tripleData() throws Exception {
         int tripleDataLength = amountOfByteInTripledArray();
-        BitSet bitSet = makeMainPartOfByte(dataToTriple);
-        byte[] tripledData = bitSet.toByteArray();
+        byte[] tripledData = makeMainPartOfByte(dataToTriple, tripleDataLength);
         for (byte item : tripledData) {
             printByte(item);
         }
 
     }
 
-    private BitSet makeMainPartOfByte(byte[] bytes) throws Exception {
-        BitSet bitSet = new BitSet();
-        int byteIndexToBitSet = 0;
+    private byte[] makeMainPartOfByte(byte[] bytes, int tripledDataLength) throws Exception {
+        result = new byte[tripledDataLength];
 
         for (int b = 0; b < dataToTriple.length; b++) {
-            printByte(bytes[b]);
-            int countOfBitMaxThree = 1;
-            for (int i = 0; i < 8; i++) {
+            for (int i = 7; i >= 0; i--) {
                 int mask = 1 << i;
-                if (countOfBitMaxThree == 4) {
-                    countOfBitMaxThree = 1;
-                    int first = bitSet.get(i - 1) ? 1 : 0;
-                    int second = bitSet.get(i - 2) ? 1 : 0;
-                    int third = bitSet.get(i - 3) ? 1 : 0;;
-                    int sum = getSumOfBits(first, second, third);
+                if (countOfBitMaxThree == 3) {
+                    countOfBitMaxThree = 0;
+                    int sum = getSumOfBits(sumOfThreeBits);
                     for (int j = 0; j < 2; j++) {
-                        bitSet.set(byteIndexToBitSet, sum == 1);
-                        byteIndexToBitSet++;
+                        tempByte ^= sum << numOfBit;
+                        numOfBit--;
+                        if (numOfBit < 0) setBitToZero();
+                    }
+                    sumOfThreeBits = 0;
+
+                    int value = (mask & bytes[b]) >> i;
+                    sumOfThreeBits += value;
+                    for (int j = 0; j < 2; j++) {
+                        tempByte ^= (value << numOfBit);
+                        numOfBit--;
+                        if (numOfBit < 0) setBitToZero();
                     }
                 } else {
+                    int value = (mask & bytes[b]) >> i;
+                    sumOfThreeBits += value;
                     for (int j = 0; j < 2; j++) {
-                        int value = (mask & bytes[b]) >> i;
-                        bitSet.set(byteIndexToBitSet, value == 1);
-                        byteIndexToBitSet++;
+                        tempByte ^= (value << numOfBit);
+                        numOfBit--;
+                        if (numOfBit < 0) setBitToZero();
                     }
                 }
                 countOfBitMaxThree++;
             }
         }
+        return result;
+    }
 
-        System.out.println();
-        return bitSet;
+    private void setBitToZero() {
+        result[numOfResultByte] = tempByte;
+        tempByte = 0;
+        numOfBit = 7;
+        numOfResultByte++;
     }
 
     private void printByte(byte byteToPrint) {
@@ -62,11 +78,10 @@ public class TripleBits {
             int value = (byteToPrint & mask) >> i;
             System.out.print(value);
         }
-        System.out.print(" ");
+        System.out.println();
     }
 
-    private int getSumOfBits(int first, int second, int third) throws Exception {
-        int sum = first + second + third;
+    private int getSumOfBits(int sum) throws Exception {
         switch (sum) {
             case 0:
             case 2:
