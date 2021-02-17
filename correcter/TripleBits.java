@@ -41,10 +41,8 @@ public class TripleBits {
                         if (numOfBit < 0) setBitToZero();
                     }
                     sumOfThreeBits = 0;
-                    setTwoBitsWithoutSum(mask, bytes, b, i);
-                } else {
-                    setTwoBitsWithoutSum(mask, bytes, b, i);
                 }
+                setTwoBitsWithoutSum(mask, bytes, b, i);
                 countOfBitMaxThree++;
             }
         }
