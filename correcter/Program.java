@@ -1,6 +1,5 @@
 package correcter;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Program {
@@ -17,6 +16,7 @@ public class Program {
         while (isWork) {
             String action;
             try {
+                System.out.print("Write a mode: ");
                 action = scan.nextLine();
             } catch (Exception e) {
                 throw new Exception("You should enter actually query");
@@ -39,9 +39,16 @@ public class Program {
         }
     }
 
-    public void encode() throws IOException {
+    public void encode() throws Exception {
         FileReader fileReader = new FileReader("send.txt");
+        TripleBits tripleBits = new TripleBits(fileReader.readData());
 
+        byte[] dataToTriple = tripleBits.getDataToTriple();
+        Printer printer = new Printer(dataToTriple);
+        System.out.println(printer.sendDataPrint());
+
+        FileWriter fileWriter = new FileWriter("encoded.txt:", tripleBits.tripleData());
+        fileWriter.writeData();
     }
 
     public void send() {

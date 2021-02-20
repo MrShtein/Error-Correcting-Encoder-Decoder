@@ -1,8 +1,5 @@
 package correcter;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-
 public class TripleBits {
 
     private byte[] dataToTriple;
@@ -18,13 +15,9 @@ public class TripleBits {
         this.dataToTriple = dataToTriple;
     }
 
-    public void tripleData() throws Exception {
+    public byte[] tripleData() throws Exception {
         int tripleDataLength = amountOfByteInTripledArray();
-        byte[] tripledData = makeMainPartOfByte(dataToTriple, tripleDataLength);
-        for (byte item : tripledData) {
-            printByte(item);
-        }
-
+        return makeMainPartOfByte(dataToTriple, tripleDataLength);
     }
 
     private byte[] makeMainPartOfByte(byte[] bytes, int tripledDataLength) throws Exception {
@@ -66,14 +59,7 @@ public class TripleBits {
         numOfResultByte++;
     }
 
-    private void printByte(byte byteToPrint) {
-        for (int i = 7; i >= 0; i--) {
-            int mask = 1 << i;
-            int value = (byteToPrint & mask) >> i;
-            System.out.print(value);
-        }
-        System.out.println();
-    }
+
 
     private int getSumOfBits(int sum) throws Exception {
         switch (sum) {
