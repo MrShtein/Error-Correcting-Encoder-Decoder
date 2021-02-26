@@ -76,9 +76,20 @@ public class Program {
 
     }
 
-    public void decode() throws IOException {
+    public void decode() throws Exception {
         FileReader fileReader = new FileReader("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/received.txt");
         byte[] bytesToDecode = fileReader.readData();
+        Decoder decoder = new Decoder();
+        byte[] decodedBytes = decoder.decodeBytes(bytesToDecode);
+        Printer printer = new Printer();
+
+//        String b = printer.printByteBinView(decoder.decodeByte(bytesToDecode[0], 4));
+//        System.out.println(b);
+//
+        System.out.println("Bytes Before:");
+        System.out.println(printer.byteArrayPrint(bytesToDecode));
+        System.out.println("Bytes After:");
+        System.out.println(printer.byteArrayPrint(decodedBytes));
 
     }
 

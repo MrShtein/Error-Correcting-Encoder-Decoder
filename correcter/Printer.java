@@ -94,7 +94,7 @@ public class Printer {
         return sb.toString();
     }
 
-    private String printByteBinView(byte byteToPrint) {
+    protected String printByteBinView(byte byteToPrint) {
         StringBuilder sb = new StringBuilder();
         for (int i = 7; i >= 0; i--) {
             int mask = 1 << i;

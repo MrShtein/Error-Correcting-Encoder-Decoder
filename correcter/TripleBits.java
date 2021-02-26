@@ -61,7 +61,7 @@ public class TripleBits {
 
 
 
-    private int getSumOfBits(int sum) throws Exception {
+    public static int getSumOfBits(int sum) throws Exception {
         switch (sum) {
             case 0:
             case 2:
