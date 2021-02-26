@@ -92,7 +92,7 @@ public class Decoder {
             curByte ^= mask << bitToChange;
         }
 
-        if (((curByte & (mask << (bitToChange - 1)))) != correctValue) {
+        if (((curByte & (mask << (bitToChange - 1))) >> (bitToChange - 1)) != correctValue) {
             curByte ^= mask << (bitToChange - 1);
         }
 
