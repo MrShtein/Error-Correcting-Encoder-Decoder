@@ -1,6 +1,7 @@
 package correcter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Program {
@@ -41,7 +42,7 @@ public class Program {
     }
 
     public void encode() throws Exception {
-        FileReader fileReader = new FileReader("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/send.txt");
+        FileReader fileReader = new FileReader("send.txt");
         TripleBits tripleBits = new TripleBits(fileReader.readData());
 
         byte[] dataToTriple = tripleBits.getDataToTriple();
@@ -50,8 +51,8 @@ public class Program {
         Printer printer = new Printer(dataToTriple);
         System.out.println(printer.sendDataPrint());
 
-        FileWriter fileWriter = new FileWriter("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/encoded.txt", tripledData);
-        fileWriter.writeData();
+        FileWriter fileWriter = new FileWriter("encoded.txt");
+        fileWriter.writeData(tripledData);
 
         System.out.println(printer.encodeModePrint(tripledData));
 
@@ -59,15 +60,15 @@ public class Program {
     }
 
     public void send() throws IOException {
-        FileReader fileReader = new FileReader("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/encoded.txt");
+        FileReader fileReader = new FileReader("encoded.txt");
 
         ByteMixer byteMixer = new ByteMixer();
 
         byte[] curBytes = fileReader.readData();
         byte[] mixedBytes = byteMixer.changeBitsInBytes(curBytes);
 
-        FileWriter fileWriter = new FileWriter("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/received.txt", mixedBytes);
-        fileWriter.writeData();
+        FileWriter fileWriter = new FileWriter("received.txt");
+        fileWriter.writeData(mixedBytes);
 
         Printer printer = new Printer();
         String result = printer.sendModePrint(curBytes, mixedBytes);
@@ -77,19 +78,30 @@ public class Program {
     }
 
     public void decode() throws Exception {
-        FileReader fileReader = new FileReader("/home/mrshtein/IdeaProjects/Correcting-Encoder-Decoder/Error Correcting Encoder-Decoder/task/src/correcter/received.txt");
-        byte[] bytesToDecode = fileReader.readData();
+        FileReader fileReader = new FileReader("received.txt");
+        FileWriter fileWriter = new FileWriter("decoded.txt");
         Decoder decoder = new Decoder();
-        byte[] decodedBytes = decoder.decodeBytes(bytesToDecode);
         Printer printer = new Printer();
+        TripleBits tripleBits = new TripleBits();
 
-//        String b = printer.printByteBinView(decoder.decodeByte(bytesToDecode[0], 4));
-//        System.out.println(b);
-//
-        System.out.println("Bytes Before:");
-        System.out.println(printer.byteArrayPrint(bytesToDecode));
-        System.out.println("Bytes After:");
-        System.out.println(printer.byteArrayPrint(decodedBytes));
+        byte[] bytesToDecode = fileReader.readData();
+        byte[] decodedBytes = decoder.decodeBytes(bytesToDecode);
+        byte[] firstString = tripleBits.unTripleData(decodedBytes);
+
+
+        String firstStr = printer.decodeModePrintWithLostByte(bytesToDecode, firstString, decodedBytes);
+        String  secStr = "";
+        if (firstString[firstString.length - 1] == 0) {
+            byte[] temp = Arrays.copyOfRange(firstString, 0, firstString.length - 1);
+            fileWriter.writeData(temp);
+            secStr = printer.decodeModePrintWithoutLostByte(temp);
+        } else {
+            secStr = printer.decodeModePrintWithoutLostByte(firstString);
+            fileWriter.writeData(firstString);
+        }
+        System.out.print(firstStr);
+        System.out.println(secStr);
+
 
     }
 

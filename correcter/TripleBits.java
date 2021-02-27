@@ -10,6 +10,9 @@ public class TripleBits {
     byte[] result;
     int countOfBitMaxThree = 0;
 
+    public TripleBits() {
+
+    }
 
     public TripleBits(byte[] dataToTriple) {
         this.dataToTriple = dataToTriple;
@@ -18,6 +21,46 @@ public class TripleBits {
     public byte[] tripleData() throws Exception {
         int tripleDataLength = amountOfByteInTripledArray();
         return makeMainPartOfByte(dataToTriple, tripleDataLength);
+    }
+
+    public byte[] unTripleData(byte[] data) {
+        int unTripledDataLength = amountOfByteInUnTripledArray(data);
+        return unTripleBytes(data, unTripledDataLength);
+    }
+
+    private byte[] unTripleBytes(byte[] data, int length) {
+        byte[] result = new byte[length];
+        int indexForResult = 0;
+        int indexPreparedToAdd = 7;
+        byte temp = 0;
+        int mask = 1;
+        for (int i = 0; i < data.length; i++) {
+            byte current = data[i];
+            for (int b = 6; b >= 2; b -= 2) {
+                if (indexPreparedToAdd < 0) {
+                    indexPreparedToAdd = 7;
+                    result[indexForResult] = temp;
+                    temp = 0;
+                    indexForResult++;
+                }
+                int curBit = ((current & (mask << b)) >> b);
+                temp ^= curBit << indexPreparedToAdd;
+                indexPreparedToAdd--;
+            }
+        }
+        result[indexForResult] = temp;
+        return result;
+    }
+
+    private int amountOfByteInUnTripledArray(byte[] data) {
+        int currentBitsAmount = data.length * 8;
+        int extraBits = data.length * 5;
+        int difference = currentBitsAmount - extraBits;
+        if  (difference % 8 != 0) {
+            return difference / 8 + 1;
+        }
+        return  (currentBitsAmount - extraBits) / 8;
+
     }
 
     private byte[] makeMainPartOfByte(byte[] bytes, int tripledDataLength) throws Exception {
@@ -38,6 +81,13 @@ public class TripleBits {
                 setTwoBitsWithoutSum(mask, bytes, b, i);
                 countOfBitMaxThree++;
             }
+        }
+        if (numOfBit > 0) {
+            int sum = getSumOfBits(sumOfThreeBits);
+            for (int j = 0; j < 2; j++) {
+                tempByte ^= sum << j;
+            }
+            setBitToZero();
         }
         return result;
     }
@@ -76,15 +126,11 @@ public class TripleBits {
 
     private int amountOfByteInTripledArray() {
         int bitInByte = 8;
-        int amountOfTripleBit = dataToTriple.length * bitInByte * 2;
-        int extraBits = amountOfTripleBit / 3 + amountOfTripleBit % 3;
-        int allBits = amountOfTripleBit + extraBits;
-        int countOfBytes = allBits / 8;
-        if (allBits % 8 != 0) {
-            countOfBytes++;
+        int amountOfTripleBit = dataToTriple.length * bitInByte;
+        if (amountOfTripleBit % 3 != 0) {
+            return amountOfTripleBit / 3 + 1;
         }
-        return countOfBytes;
-
+        return amountOfTripleBit / 3;
     }
 
     public byte[] getDataToTriple() {

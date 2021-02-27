@@ -17,6 +17,35 @@ public class Printer {
         this.clearData = clearData;
     }
 
+    protected String decodeModePrintWithLostByte(byte[] encodedData, byte[] decodedSmallData, byte[] decodedBigData) {
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append(RECEIVED_FILENAME)
+                .append(":")
+                .append("\nhex view:")
+                .append(printBytesHexView(encodedData))
+                .append("\nbin view:")
+                .append(byteArrayPrint(encodedData))
+                .append("\n\n")
+                .append(DECODED_FILENAME)
+                .append(":")
+                .append("\ncorrect:")
+                .append(byteArrayPrint(decodedBigData))
+                .append("\ndecode:")
+                .append(byteArrayPrintForLostNullByte(decodedSmallData));
+                return sb.toString();
+
+    }
+
+    protected String decodeModePrintWithoutLostByte(byte[] byteToPrint) {
+        StringBuilder sb = new StringBuilder("\nremove:");
+                sb.append(byteArrayPrint(byteToPrint))
+                        .append("\nhex view:")
+                        .append(printBytesHexView(byteToPrint))
+                        .append("\ntext view: ")
+                        .append(new String(byteToPrint));
+                return sb.toString();
+    }
+
     protected String sendModePrint(byte[] encodeData, byte[] receivedData) {
         StringBuilder sb = new StringBuilder("\n");
         sb.append(ENCODED_FILENAME)
@@ -37,7 +66,7 @@ public class Printer {
     }
 
     protected String encodeModePrint(byte[] bytesToPrint) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
         sb.append(ENCODED_FILENAME)
                 .append(":")
                 .append("\nexpand:")
@@ -51,7 +80,7 @@ public class Printer {
     }
 
     protected String sendDataPrint() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("\n");
         sb.append(SEND_FILENAME)
                 .append("\n")
                 .append(String.format("text view: %s", new String(clearData)))
@@ -76,6 +105,18 @@ public class Printer {
         StringBuilder sb = new StringBuilder();
         for (byte oneByte : bytesToPrint) {
             sb.append(" ").append(printByteBinView(oneByte));
+        }
+        return sb.toString();
+    }
+
+    public String byteArrayPrintForLostNullByte(byte[] bytesToPrint) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytesToPrint.length; i++) {
+            if (i == bytesToPrint.length - 1 && bytesToPrint[i] == 0) {
+                sb.append(" ").append("0");
+            } else {
+                sb.append(" ").append(printByteBinView(bytesToPrint[i]));
+            }
         }
         return sb.toString();
     }

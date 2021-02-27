@@ -5,14 +5,12 @@ import java.io.*;
 public class FileWriter {
 
     private File fileAddress;
-    private byte[] data;
 
-    public FileWriter(String fileAddress, byte[] data) {
+    public FileWriter(String fileAddress) {
         this.fileAddress = new File(fileAddress);
-        this.data = data;
     }
 
-    public void writeData() throws IOException {
+    public void writeData(byte[] data) throws IOException {
         try (BufferedOutputStream buffer = new BufferedOutputStream(new FileOutputStream(fileAddress))) {
 
             buffer.write(data);
