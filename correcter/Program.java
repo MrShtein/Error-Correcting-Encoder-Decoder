@@ -80,13 +80,12 @@ public class Program {
     public void decode() throws Exception {
         FileReader fileReader = new FileReader("received.txt");
         FileWriter fileWriter = new FileWriter("decoded.txt");
-        Decoder decoder = new Decoder();
+        HammingCode hammingCode = new HammingCode();
         Printer printer = new Printer();
-        TripleBits tripleBits = new TripleBits();
 
         byte[] bytesToDecode = fileReader.readData();
-        byte[] decodedBytes = decoder.decodeBytes(bytesToDecode);
-        byte[] firstString = tripleBits.unTripleData(decodedBytes);
+        byte[] decodedBytes = hammingCode.decodeHammingCode(bytesToDecode);
+        byte[] firstString = hammingCode.makeInitialString(decodedBytes);
 
 
         String firstStr = printer.decodeModePrintWithLostByte(bytesToDecode, firstString, decodedBytes);

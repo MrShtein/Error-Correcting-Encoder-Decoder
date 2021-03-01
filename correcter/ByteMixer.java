@@ -35,7 +35,7 @@ public class ByteMixer {
     }
 
     public byte changeOneBitInByte(byte byteToChange) {
-        int mask = 1 << getNumberOfBitToChange();
+        int mask = 1 << getDigitForChangeByte();
         return (byte) (byteToChange ^ mask);
     }
 

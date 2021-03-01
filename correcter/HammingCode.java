@@ -5,6 +5,90 @@ import java.util.ArrayList;
 public class HammingCode {
 
 
+    public byte[] decodeHammingCode(byte[] bytes) {
+        int mask = 1;
+        byte[] decodedBytes = new byte[bytes.length];
+        int numOfByte;
+        for (int i = 0; i < bytes.length; i++) {
+            byte firstByte = bytes[i];
+            int numForFirstBit = computeNumberOfIncorrectBit(firstByte);
+            switch (numForFirstBit) {
+                case 1:
+                    numOfByte = 7;
+                    break;
+                case 2:
+                    numOfByte = 6;
+                    break;
+                case 3:
+                    numOfByte = 5;
+                    break;
+                case 4:
+                    numOfByte = 4;
+                    break;
+                case 5:
+                    numOfByte = 3;
+                    break;
+                case 6:
+                    numOfByte = 2;
+                    break;
+                case 7:
+                    numOfByte = 1;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Something wrong");
+            }
+            firstByte ^= mask << numOfByte;
+            decodedBytes[i] = firstByte;
+        }
+        return decodedBytes;
+    }
+
+    public byte[] makeInitialString(byte[] curBytes) {
+        byte[] decodedBytes = new byte[curBytes.length / 2];
+        int index = 0;
+        for (int i = 0; i < curBytes.length; i = i + 2) {
+            decodedBytes[index] = makeOneByteFromTwoByte(curBytes[i], curBytes[i + 1]);
+            index++;
+        }
+        return decodedBytes;
+    }
+
+    private byte makeOneByteFromTwoByte(byte first, byte second) {
+        int mask = 1;
+        byte correct = 0;
+        correct ^= ((first & mask << 5) >> 5) << 7;
+        correct ^= ((first & mask << 3) >> 3) << 6;
+        correct ^= ((first & mask << 2) >> 2) << 5;
+        correct ^= ((first & mask << 1) >> 1) << 4;
+        correct ^= ((second & mask << 5) >> 5) << 3;
+        correct ^= ((second & mask << 3) >> 3) << 2;
+        correct ^= ((second & mask << 2) >> 2) << 1;
+        correct ^= ((second & mask << 1) >> 1);
+        return correct;
+    }
+
+    private int computeNumberOfIncorrectBit(byte curByte) {
+        int mask = 1;
+        int numOfIncorrectBit = 0;
+        int firstBit = getSumForParity(curByte, 1);
+        int secBit = getSumForParity(curByte, 2);
+        int thirdBit = getSumForParity(curByte, 4);
+
+        boolean first = firstBit == (curByte & mask << 7) >> 7;
+        boolean sec = secBit == (curByte & mask << 6) >> 6;
+        boolean third = thirdBit == (curByte & mask << 4) >> 4;
+        if (!first) {
+            numOfIncorrectBit += 1;
+        }
+        if (!sec) {
+            numOfIncorrectBit += 2;
+        }
+        if (!third) {
+            numOfIncorrectBit += 4;
+        }
+        return numOfIncorrectBit;
+    }
+
     public byte[] makeHammingCode(byte[] bytes) {
         int mask = 1;
         byte[] bytesList = new byte[bytes.length * 2];
@@ -39,7 +123,7 @@ public class HammingCode {
 
         temp ^= ((curByte & (mask << startBitNum)) >> startBitNum) << 1;
 
-       return temp;
+        return temp;
     }
 
     private byte calcParityBits(byte curByte) {

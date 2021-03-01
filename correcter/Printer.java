@@ -31,15 +31,14 @@ public class Printer {
                 .append("\ncorrect:")
                 .append(byteArrayPrint(decodedBigData))
                 .append("\ndecode:")
-                .append(byteArrayPrintForLostNullByte(decodedSmallData));
+                .append(byteArrayPrint(decodedSmallData));
                 return sb.toString();
 
     }
 
     protected String decodeModePrintWithoutLostByte(byte[] byteToPrint) {
-        StringBuilder sb = new StringBuilder("\nremove:");
-                sb.append(byteArrayPrint(byteToPrint))
-                        .append("\nhex view:")
+        StringBuilder sb = new StringBuilder();
+                sb.append("\nhex view:")
                         .append(printBytesHexView(byteToPrint))
                         .append("\ntext view: ")
                         .append(new String(byteToPrint));
@@ -66,7 +65,7 @@ public class Printer {
     }
 
     protected String encodeModePrint(byte[] bytesToPrint) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder("\n");
         sb.append(ENCODED_FILENAME)
                 .append(":")
                 .append("\nexpand:")
