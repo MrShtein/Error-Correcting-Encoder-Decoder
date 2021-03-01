@@ -43,18 +43,18 @@ public class Program {
 
     public void encode() throws Exception {
         FileReader fileReader = new FileReader("send.txt");
-        TripleBits tripleBits = new TripleBits(fileReader.readData());
+        HammingCode hammingCode = new HammingCode();
 
-        byte[] dataToTriple = tripleBits.getDataToTriple();
-        byte[] tripledData = tripleBits.tripleData();
+        byte[] stringToEncode = fileReader.readData();
+        byte[] encodedData = hammingCode.makeHammingCode(stringToEncode);
 
-        Printer printer = new Printer(dataToTriple);
+        Printer printer = new Printer(stringToEncode);
         System.out.println(printer.sendDataPrint());
 
         FileWriter fileWriter = new FileWriter("encoded.txt");
-        fileWriter.writeData(tripledData);
+        fileWriter.writeData(encodedData);
 
-        System.out.println(printer.encodeModePrint(tripledData));
+        System.out.println(printer.encodeModePrint(encodedData));
 
 
     }
