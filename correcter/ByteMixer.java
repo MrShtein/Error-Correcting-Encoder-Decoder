@@ -7,8 +7,8 @@ public class ByteMixer {
     private  final int MAX_BIT_TO_CHANGE;
 
     public ByteMixer() {
-        this.MIN_BIT_TO_CHANGE = 0;
-        this.MAX_BIT_TO_CHANGE = 8;
+        this.MIN_BIT_TO_CHANGE = 1;
+        this.MAX_BIT_TO_CHANGE = 7;
     }
 
     public ByteMixer(byte[] phraseInByte, int minByte, int maxByte) {
@@ -44,7 +44,7 @@ public class ByteMixer {
     }
 
     public int getDigitForChangeByte() {
-        return (int) (Math.random() * MAX_BIT_TO_CHANGE - MIN_BIT_TO_CHANGE) + 2;
+        return (int) (Math.random() * MAX_BIT_TO_CHANGE - MIN_BIT_TO_CHANGE) + 1;
     }
 
 

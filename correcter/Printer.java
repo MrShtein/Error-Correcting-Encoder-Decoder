@@ -70,7 +70,7 @@ public class Printer {
         sb.append(ENCODED_FILENAME)
                 .append(":")
                 .append("\nexpand:")
-                .append(byteArrayPrintParity(bytesToPrint))
+                .append(byteArrayPrintForExpend(bytesToPrint))
                 .append("\nparity:")
                 .append(byteArrayPrint(bytesToPrint))
                 .append("\nhex view:")
@@ -98,6 +98,14 @@ public class Printer {
             sb.replace(sb.length() - 2, sb.length(), "..");
         }
         System.out.println();
+        return sb.toString();
+    }
+
+    public String byteArrayPrintForExpend(byte[] bytesToPrint) {
+        StringBuilder sb = new StringBuilder();
+        for (byte oneByte : bytesToPrint) {
+            sb.append(" ").append(printByteBinViewForExpand(oneByte));
+        }
         return sb.toString();
     }
 
@@ -131,6 +139,20 @@ public class Printer {
                 sb.append(0);
             }
 
+        }
+        return sb.toString();
+    }
+
+    protected String printByteBinViewForExpand(byte byteToPrint) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            int mask = 1 << i;
+            int value = (byteToPrint & mask) >> i;
+            if (i == 7 || i == 6 || i == 4 || i == 0) {
+                sb.append('.');
+            } else {
+                sb.append(value);
+            }
         }
         return sb.toString();
     }
